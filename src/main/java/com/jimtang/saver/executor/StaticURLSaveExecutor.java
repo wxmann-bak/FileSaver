@@ -37,7 +37,7 @@ public class StaticURLSaveExecutor implements SaveExecutor {
             while ((len = inputStream.read(byteArray)) != -1) {
                 outputStream.write(byteArray, 0, len);
             }
-            LOGGER.info(String.format("Wrote util from: %s, to: %s", imageUrl, saveLocation));
+            LOGGER.info(String.format("Wrote file from: %s, to: %s", imageUrl, saveLocation));
         } catch (IOException e) {
             throw new ImageRetrievalException(e);
         } finally {
