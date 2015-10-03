@@ -1,24 +1,15 @@
 package com.jimtang.saver.plugins.nasamsfc;
 
-import com.jimtang.saver.executor.HTTPResponseSaveExecutor;
-import com.jimtang.saver.executor.ImageRetrievalException;
-import com.jimtang.saver.executor.StaticURLSaveExecutor;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
+import com.jimtang.saver.executor.httpresponse.HTMLBodySaveExecutor;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.util.EntityUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
  * Created by tangz on 10/2/2015.
  */
-public class NasaMSFCSaveExecutor extends HTTPResponseSaveExecutor {
+public class NasaMSFCSaveExecutor extends HTMLBodySaveExecutor {
 
     private static final String HOST = "weather.msfc.nasa.gov";
 
@@ -26,25 +17,6 @@ public class NasaMSFCSaveExecutor extends HTTPResponseSaveExecutor {
 
     public NasaMSFCSaveExecutor(NasaMSFCParameters parameters) {
         this.parameters = parameters;
-    }
-
-    @Override
-    protected void saveFromResponse(HttpResponse response, String saveLocation) {
-        HttpEntity entity = response.getEntity();
-        try {
-            String htmlStr = EntityUtils.toString(entity);
-            String imageUrl = getImageUrlFromHtml(htmlStr);
-            StaticURLSaveExecutor urlSaveExecutor = new StaticURLSaveExecutor(imageUrl);
-            urlSaveExecutor.doSave(saveLocation);
-        } catch (IOException e) {
-            throw new ImageRetrievalException(e);
-        }
-    }
-
-    private String getImageUrlFromHtml(String html) {
-        Document document = Jsoup.parse(html);
-        Elements imageTags = document.getElementsByTag("IMG");
-        return "http://" + HOST + imageTags.attr("SRC");
     }
 
     @Override
@@ -70,4 +42,8 @@ public class NasaMSFCSaveExecutor extends HTTPResponseSaveExecutor {
         }
     }
 
+    @Override
+    public String getHost() {
+        return HOST;
+    }
 }
