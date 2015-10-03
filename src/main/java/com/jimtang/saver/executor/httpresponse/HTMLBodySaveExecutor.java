@@ -11,7 +11,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.URI;
 
 /**
  * Created by tangz on 10/3/2015.
@@ -35,9 +34,6 @@ public abstract class HTMLBodySaveExecutor extends HTTPResponseSaveExecutor impl
         Elements imageTags = document.getElementsByTag("IMG");
         return "http://" + getHost() + imageTags.attr("SRC");
     }
-
-    @Override
-    protected abstract URI getURI();
 
     @Override
     public abstract String getHost();

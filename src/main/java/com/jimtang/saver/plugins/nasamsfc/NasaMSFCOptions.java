@@ -1,5 +1,6 @@
 package com.jimtang.saver.plugins.nasamsfc;
 
+import com.jimtang.saver.plugins.AbstractInputOption;
 import com.jimtang.saver.plugins.PluginInputOption;
 
 /**
@@ -7,19 +8,7 @@ import com.jimtang.saver.plugins.PluginInputOption;
  */
 public final class NasaMSFCOptions {
 
-    static class AbstractOption<T> implements PluginInputOption<T> {
-        T repr;
-        AbstractOption(T repr) {
-            this.repr = repr;
-        }
-
-        @Override
-        public T get() {
-            return repr;
-        }
-    }
-
-    public static class MapType extends AbstractOption<String> {
+    public static class MapType extends AbstractInputOption<String> {
 
         public static final MapType STANDARD = new MapType("standard");
         public static final MapType COUNTY = new MapType("county");
@@ -31,7 +20,7 @@ public final class NasaMSFCOptions {
         }
     }
 
-    public static class SatType extends AbstractOption<String> {
+    public static class SatType extends AbstractInputOption<String> {
 
         public static final SatType IR = new SatType("ir");
         public static final SatType VIS = new SatType("vis");
@@ -42,7 +31,7 @@ public final class NasaMSFCOptions {
         }
     }
 
-    public static class Zoom extends AbstractOption<Integer> {
+    public static class Zoom extends AbstractInputOption<Integer> {
 
         public static final Zoom HIGH = new Zoom(1);
         public static final Zoom MEDIUM = new Zoom(2);
@@ -53,7 +42,7 @@ public final class NasaMSFCOptions {
         }
     }
 
-    public static class Sector extends AbstractOption<String> {
+    public static class Sector extends AbstractInputOption<String> {
 
         public static final Sector GOES_E_FULL = new Sector("GOES-E FULL");
         public static final Sector GOES_E_CONUS = new Sector("GOES-E CONUS");
