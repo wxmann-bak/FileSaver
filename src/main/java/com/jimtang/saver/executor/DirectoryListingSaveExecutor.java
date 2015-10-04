@@ -27,16 +27,19 @@ public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilte
         filter = FilePredicates.forIsFile();
     }
 
+    @Override
     public void setAllowedFileTypes(String... fileTypes) {
         if (fileTypes.length > 0) {
             filter = FilePredicates.forAllowedFileTypes(fileTypes);
         }
     }
 
+    @Override
     public void addAndFilter(Predicate<String> additionalFilter) {
         filter = filter.and(additionalFilter);
     }
 
+    @Override
     public void addOrFilter(Predicate<String> additionalFilter) {
         filter = filter.or(additionalFilter);
     }
