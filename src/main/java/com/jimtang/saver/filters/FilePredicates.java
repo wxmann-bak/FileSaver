@@ -14,4 +14,8 @@ public final class FilePredicates {
     public static Predicate<String> forAllowedFileTypes(String... fileTypes) {
         return new FileTypePredicate(fileTypes);
     }
+
+    public static Predicate<String> forContainingText(String textSequence) {
+        return new ContainsTextPredicate(textSequence);
+    }
 }
