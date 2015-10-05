@@ -7,7 +7,5 @@ import java.util.function.Predicate;
  */
 public interface SaveFilterable {
 
-    void addAndFilter(Predicate<String> filter);
-
-    void addOrFilter(Predicate<String> filter);
+    void addFilter(Predicate<String> filter);
 }

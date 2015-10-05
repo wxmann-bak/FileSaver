@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 /**
  * Created by tangz on 10/4/2015.
  */
-public class FileTypePredicate implements Predicate<String> {
+class FileTypePredicate implements Predicate<String> {
 
     private String[] fileExtensions;
 

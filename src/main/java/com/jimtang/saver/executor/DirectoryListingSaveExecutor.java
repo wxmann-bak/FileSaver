@@ -35,13 +35,8 @@ public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilte
     }
 
     @Override
-    public void addAndFilter(Predicate<String> additionalFilter) {
+    public void addFilter(Predicate<String> additionalFilter) {
         filter = filter.and(additionalFilter);
-    }
-
-    @Override
-    public void addOrFilter(Predicate<String> additionalFilter) {
-        filter = filter.or(additionalFilter);
     }
 
     private List<String> getAndFilterURLs() {
