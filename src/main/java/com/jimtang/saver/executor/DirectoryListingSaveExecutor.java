@@ -88,6 +88,12 @@ public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilte
             StaticURLSaveExecutor exec = new StaticURLSaveExecutor(url);
             String actualSaveLocation = getFullFileLocation(saveLocation, getFileName(url));
             exec.doSave(actualSaveLocation);
+
+            // for security reasons, pause 0.5 sec between saves, so as we don't overwhelm the host.
+            try {
+                Thread.sleep(500L);
+            } catch (InterruptedException e) {
+            }
         }
     }
 }
