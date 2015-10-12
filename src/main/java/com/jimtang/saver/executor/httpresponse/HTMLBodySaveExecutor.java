@@ -38,9 +38,15 @@ public abstract class HTMLBodySaveExecutor extends HTTPResponseSaveExecutor impl
         }
     }
 
-    private String getImageUrlFromHtml(String html) {
+    protected String getImageUrlFromHtml(String html) {
         Document document = Jsoup.parse(html);
         Elements imageTags = document.getElementsByTag("IMG");
+        if (imageTags.isEmpty()) {
+            throw new HTMLTraverseException("No IMG tags found in response body.");
+        }
+        if (!imageTags.hasAttr("SRC")) {
+            throw new HTMLTraverseException("No IMG SRC attribute found in response body.");
+        }
         return "http://" + getHost() + imageTags.attr("SRC");
     }
 
