@@ -24,8 +24,8 @@ public class StaticURLSaveExecutor implements SaveExecutor, HistorySupplier {
         this.imageUrl = imageUrl;
     }
 
-    protected void doSaveWithStream(InputStream fileStream, String saveLocation) throws IOException {
-        try (InputStream in = fileStream;
+    protected void doSaveWithURL(URL url, String saveLocation) throws IOException {
+        try (InputStream in = url.openStream();
              OutputStream out = new FileOutputStream(saveLocation))
         {
             byte[] buf = new byte[bytes];
@@ -43,7 +43,7 @@ public class StaticURLSaveExecutor implements SaveExecutor, HistorySupplier {
     @Override
     public void doSave(String saveLocation) {
         try {
-            doSaveWithStream(new URL(imageUrl).openStream(), saveLocation);
+            doSaveWithURL(new URL(imageUrl), saveLocation);
             pushToHistory(new File(saveLocation));
 
         } catch (IOException e) {

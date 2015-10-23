@@ -31,7 +31,7 @@ public abstract class HTMLBodySaveExecutor extends HTTPResponseSaveExecutor impl
             StaticURLSaveExecutor saveDelegate = new StaticURLSaveExecutor(imageUrl);
             saveDelegate.doSave(saveLocation);
 
-            pushToHistory(new File(imageUrl));
+            pushToHistory(new File(saveLocation));
 
         } catch (IOException e) {
             throw new ImageRetrievalException(e);
