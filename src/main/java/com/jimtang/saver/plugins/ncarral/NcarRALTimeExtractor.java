@@ -3,7 +3,6 @@ package com.jimtang.saver.plugins.ncarral;
 import com.jimtang.saver.filters.time.RegexTimeExtractor;
 
 import java.time.format.DateTimeFormatter;
-import java.util.regex.Pattern;
 
 /**
  * Created by tangz on 10/4/2015.
@@ -21,8 +20,8 @@ public class NcarRALTimeExtractor extends RegexTimeExtractor {
     }
 
     @Override
-    protected Pattern getRegexExp() {
-        return Pattern.compile("\\d{8}_\\d{6}");
+    protected String getRegexExp() {
+        return "\\d{8}_\\d{6}";
     }
 
     @Override
