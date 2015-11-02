@@ -10,13 +10,13 @@ import java.util.regex.Pattern;
  */
 public abstract class RegexTimeExtractor implements TimeExtractor {
 
-    protected abstract Pattern getRegexExp();
+    protected abstract String getRegexExp();
 
     protected abstract DateTimeFormatter getDateTimeFormatter();
 
     @Override
     public LocalDateTime extractDateTime(String fileName) {
-        Matcher matcher = getRegexExp().matcher(fileName);
+        Matcher matcher = Pattern.compile(getRegexExp()).matcher(fileName);
 
         if (matcher.find()) {
             String dateTimeString = matcher.group(0);

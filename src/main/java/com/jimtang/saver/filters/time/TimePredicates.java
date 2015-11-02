@@ -9,6 +9,16 @@ import java.time.format.DateTimeFormatter;
  */
 public final class TimePredicates {
 
+    public static TimePredicate after(TimeExtractor converter, DateTimeFormatter formatter, String timeStr) {
+        LocalDateTime dateTime = LocalDateTime.parse(timeStr, formatter);
+        return new AfterTimePredicate(dateTime) {
+            @Override
+            protected LocalDateTime extractTimeFromFile(String fileName) {
+                return converter.extractDateTime(fileName);
+            }
+        };
+    }
+
     public static TimePredicate onDayBetweenHours(TimeExtractor converter,
                                                   int yr,
                                                   int mo,
