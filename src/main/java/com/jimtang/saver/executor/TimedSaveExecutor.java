@@ -63,7 +63,7 @@ public class TimedSaveExecutor implements SaveExecutor {
                                     LOGGER.info(String.format(
                                             "Removed duplicate file: %s, of already saved file: %s",
                                             latest.getPath(), file.getPath()));
-                                    history.removeLatest();
+//                                    history.removeLatest();
                                 }
                                 return;
                             }
