@@ -10,7 +10,7 @@ import java.util.Iterator;
  */
 public class SaveHistory implements Iterable<File> {
 
-    private static final int DEFAULT_LENGTH = 3;
+    private static final int DEFAULT_LENGTH = 5;
 
     private int capacity;
     private Deque<File> history;
