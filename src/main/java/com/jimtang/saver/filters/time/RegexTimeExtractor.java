@@ -12,7 +12,7 @@ public abstract class RegexTimeExtractor implements TimeExtractor {
 
     protected abstract String getRegexExp();
 
-    protected abstract DateTimeFormatter getDateTimeFormatter();
+    public abstract DateTimeFormatter getFormatter();
 
     @Override
     public LocalDateTime extractDateTime(String fileName) {
@@ -20,7 +20,7 @@ public abstract class RegexTimeExtractor implements TimeExtractor {
 
         if (matcher.find()) {
             String dateTimeString = matcher.group(0);
-            return LocalDateTime.parse(dateTimeString, getDateTimeFormatter());
+            return LocalDateTime.parse(dateTimeString, getFormatter());
         }
         throw new TimeExtractionException("Cannot extract date time from file name!");
     }

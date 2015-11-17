@@ -25,7 +25,7 @@ public class NcarRALTimeExtractor extends RegexTimeExtractor {
     }
 
     @Override
-    protected DateTimeFormatter getDateTimeFormatter() {
+    public DateTimeFormatter getFormatter() {
         return DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
     }
 }
