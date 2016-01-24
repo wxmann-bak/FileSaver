@@ -24,6 +24,7 @@ public class PeriodicSaveJob implements Job {
     @Override
     public void start() {
         executorService = Executors.newScheduledThreadPool(1);
+        executorService.submit(runner);
         executorService.scheduleAtFixedRate(runner, initialDelay, period, timeUnit);
     }
 
