@@ -14,6 +14,10 @@ public class FileNameTimePredicateFactory implements TimePredicateFactory<String
         return new FileNameTimePredicateFactory(inputFormatter, fileTimeExtractor);
     }
 
+    public static FileNameTimePredicateFactory withSettings(RegexTimeExtractor regexTimeExtractor) {
+        return withSettings(regexTimeExtractor.getFormatter(), regexTimeExtractor);
+    }
+
     private DateTimeFormatter inputFormatter;
     private TimeExtractor fileTimeExtractor;
 
@@ -33,6 +37,9 @@ public class FileNameTimePredicateFactory implements TimePredicateFactory<String
         @Override
         public boolean test(String fileName) {
             LocalDateTime timeToTest = fileTimeExtractor.extractDateTime(fileName);
+            if (timeToTest == null) {
+                return false;
+            }
             return timePredicate.test(timeToTest);
         }
     }
