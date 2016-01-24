@@ -10,18 +10,29 @@ import java.util.regex.Pattern;
  */
 public abstract class RegexTimeExtractor implements TimeExtractor {
 
+    private final Pattern pattern = Pattern.compile(getRegexExp());
+    private Matcher matcher;
+
     protected abstract String getRegexExp();
 
     public abstract DateTimeFormatter getFormatter();
 
     @Override
-    public LocalDateTime extractDateTime(String fileName) {
-        Matcher matcher = Pattern.compile(getRegexExp()).matcher(fileName);
+    public boolean canExtractTime(String fileName) {
+        matcher = pattern.matcher(fileName);
+        return matcher.find();
+    }
 
-        if (matcher.find()) {
-            String dateTimeString = matcher.group(0);
-            return LocalDateTime.parse(dateTimeString, getFormatter());
+    @Override
+    public LocalDateTime extractDateTime(String fileName) {
+        if (!canExtractTime(fileName)) {
+            return null;
         }
-        throw new TimeExtractionException("Cannot extract date time from file name!");
+        if (matcher == null) {
+            matcher = pattern.matcher(fileName);
+            matcher.find();
+        }
+        String dateTimeString = matcher.group(0);
+        return LocalDateTime.parse(dateTimeString, getFormatter());
     }
 }

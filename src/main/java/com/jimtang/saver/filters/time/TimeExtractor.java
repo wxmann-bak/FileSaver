@@ -8,5 +8,7 @@ import java.time.format.DateTimeFormatter;
  */
 public interface TimeExtractor {
 
+    boolean canExtractTime(String fileName);
+
     LocalDateTime extractDateTime(String fileName);
 }

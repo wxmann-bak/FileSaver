@@ -9,7 +9,7 @@ public class AfterTimePredicate implements TimePredicate {
 
     private LocalDateTime dateTimeLower;
 
-    AfterTimePredicate(LocalDateTime dateTimeLower) {
+    public AfterTimePredicate(LocalDateTime dateTimeLower) {
         this.dateTimeLower = dateTimeLower;
     }
 

@@ -1,5 +1,6 @@
 package com.jimtang.saver.executor;
 
+import com.google.common.base.Predicates;
 import com.jimtang.saver.filters.FilePredicates;
 import com.jimtang.saver.filters.FileTypeFilterable;
 import org.apache.commons.io.FilenameUtils;
@@ -10,6 +11,7 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -20,26 +22,34 @@ import java.util.stream.Collectors;
 public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilterable {
 
     private String onlineDirectory;
-    private Predicate<String> filter;
+    private Collection<Predicate<String>> filters = new HashSet<>();
 
     public DirectoryListingSaveExecutor(String onlineDirectory) {
         this.onlineDirectory = onlineDirectory;
-        filter = FilePredicates.forIsFile();
+        filters.add(FilePredicates.forIsFile());
     }
 
     @Override
     public void setAllowedFileTypes(String... fileTypes) {
         if (fileTypes.length > 0) {
-            filter = FilePredicates.forAllowedFileTypes(fileTypes);
+            filters.add(FilePredicates.forAllowedFileTypes(fileTypes));
         }
     }
 
     @Override
     public void addFilter(Predicate<String> additionalFilter) {
-        filter = filter.and(additionalFilter);
+        filters.add(additionalFilter);
     }
 
-    private List<String> getAndFilterURLs() {
+    protected Predicate<String> getFilter() {
+        Predicate<String> filterToReturn = x -> true;
+        for (Predicate<String> filter: filters) {
+            filterToReturn = filterToReturn.and(filter);
+        }
+        return filterToReturn;
+    }
+
+    List<String> getAndFilterURLs() {
         try {
             Document document = Jsoup.connect(onlineDirectory).get();
             Elements linkElements = document.getElementsByTag("a");
@@ -47,7 +57,7 @@ public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilte
             return linkElements
                     .stream()
                     .map(elem -> getFullUrl(elem.attr("href")))
-                    .filter(filter)
+                    .filter(getFilter())
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
@@ -55,7 +65,7 @@ public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilte
         }
     }
 
-    private static String getFileName(String url) {
+    static String getFileName(String url) {
         String baseName = FilenameUtils.getBaseName(url);
         String extension = FilenameUtils.getExtension(url);
         return baseName + "." + extension;
@@ -70,10 +80,22 @@ public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilte
         }
     }
 
-    private static String getFullFileLocation(String saveDir, String fileName) {
+    static String getFullFileLocation(String saveDir, String fileName) {
         File file1 = new File(saveDir);
         File file2 = new File(file1, fileName);
         return file2.getPath();
+    }
+
+    protected void saveOne(String url, String saveLocation) {
+        StaticURLSaveExecutor exec = new StaticURLSaveExecutor(url);
+        String actualSaveLocation = getFullFileLocation(saveLocation, getFileName(url));
+        exec.doSave(actualSaveLocation);
+
+        // for security reasons, pause 0.2 sec between saves, so as we don't overwhelm the server.
+        try {
+            Thread.sleep(200L);
+        } catch (InterruptedException e) {
+        }
     }
 
     /**
@@ -85,15 +107,7 @@ public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilte
         Collection<String> urls = getAndFilterURLs();
 
         for (String url: urls) {
-            StaticURLSaveExecutor exec = new StaticURLSaveExecutor(url);
-            String actualSaveLocation = getFullFileLocation(saveLocation, getFileName(url));
-            exec.doSave(actualSaveLocation);
-
-            // for security reasons, pause 0.5 sec between saves, so as we don't overwhelm the host.
-            try {
-                Thread.sleep(500L);
-            } catch (InterruptedException e) {
-            }
+            saveOne(url, saveLocation);
         }
     }
 }

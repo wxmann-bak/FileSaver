@@ -10,7 +10,7 @@ import java.util.Iterator;
  */
 public class SaveHistory implements Iterable<File> {
 
-    private static final int DEFAULT_LENGTH = 5;
+    private static final int DEFAULT_LENGTH = 20;
 
     private int capacity;
     private Deque<File> history;
@@ -32,8 +32,12 @@ public class SaveHistory implements Iterable<File> {
         history.add(savedFile);
     }
 
-    public void removeLatest() {
-        history.removeLast();
+//    public void removeLatest() {
+//        history.removeLast();
+//    }
+
+    public boolean isEmpty() {
+        return history.isEmpty();
     }
 
     public File latest() {

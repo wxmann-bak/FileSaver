@@ -9,7 +9,7 @@ public class BeforeTimePredicate implements TimePredicate {
 
     private LocalDateTime dateTimeUpper;
 
-    BeforeTimePredicate(LocalDateTime dateTimeUpper) {
+    public BeforeTimePredicate(LocalDateTime dateTimeUpper) {
         this.dateTimeUpper = dateTimeUpper;
     }
 
