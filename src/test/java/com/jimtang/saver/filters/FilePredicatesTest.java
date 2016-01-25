@@ -11,6 +11,16 @@ import java.util.function.Predicate;
 public class FilePredicatesTest {
 
     @Test
+    public void testPredicateForIsFile() throws Exception {
+        String isAFile = "C:/test/afasdf/abc.jpg";
+        String isNotAFile = "C:/test/afasdf/";
+
+        Predicate<String> isFileFilter = FilePredicates.forIsFile();
+        Assert.assertTrue(isFileFilter.test(isAFile));
+        Assert.assertFalse(isFileFilter.test(isNotAFile));
+    }
+
+    @Test
     public void testPredicateForFileTypes() throws Exception {
         String[] allowedFileTypes = {"jpg", "png"};
         String allowedFileName = "C:/test/afasdf/abc.jpg";

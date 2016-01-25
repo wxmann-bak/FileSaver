@@ -20,6 +20,9 @@ public final class TimePredicates {
     }
 
     public static Predicate<LocalDateTime> between(LocalDateTime initialTime, LocalDateTime finalTime) {
+        if (initialTime.isAfter(finalTime)) {
+            throw new IllegalArgumentException("Initial time is after final time");
+        }
         return after(initialTime).and(before(finalTime));
     }
 }

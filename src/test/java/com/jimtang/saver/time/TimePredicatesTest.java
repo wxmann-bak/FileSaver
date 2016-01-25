@@ -35,4 +35,9 @@ public class TimePredicatesTest {
         Assert.assertFalse(filter.test(yearBefore));
         Assert.assertTrue(filter.test(yearAfter));
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionIfBetweenTimeArgumentsNotChronological() throws Exception {
+        TimePredicates.between(tenYearsAfterTurnOfCentury, turnOfCentury);
+    }
 }
