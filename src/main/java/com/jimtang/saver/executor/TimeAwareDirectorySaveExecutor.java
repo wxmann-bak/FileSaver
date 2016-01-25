@@ -5,11 +5,8 @@ import com.jimtang.saver.history.HistorySupplier;
 import com.jimtang.saver.history.SaveHistory;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
-import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -40,18 +37,18 @@ public class TimeAwareDirectorySaveExecutor extends DirectoryListingSaveExecutor
             return;
         }
         if (lowerBound == null) {
-            timeRange = fileName -> testTime(new BeforeTimePredicate(upperBound), fileName);
+            timeRange = fileName -> testTime(TimePredicates.before(upperBound), fileName);
         } else if (upperBound == null) {
-            timeRange = fileName -> testTime(new AfterTimePredicate(lowerBound), fileName);
+            timeRange = fileName -> testTime(TimePredicates.after(lowerBound), fileName);
         } else {
             if (lowerBound.isAfter(upperBound)) {
                 throw new SaveConfigurationException("Upper Bound < Lower bound");
             }
-            timeRange = fileName -> testTime(new BetweenTimePredicate(lowerBound, upperBound), fileName);
+            timeRange = fileName -> testTime(TimePredicates.between(lowerBound, upperBound), fileName);
         }
     }
 
-    private boolean testTime(TimePredicate timePredicate, String fileName) {
+    private boolean testTime(Predicate<LocalDateTime> timePredicate, String fileName) {
         if (!timeExtractor.canExtractTime(fileName)) {
             throw new TimeExtractionException("Can't extract time from: " + fileName);
         }
@@ -67,7 +64,7 @@ public class TimeAwareDirectorySaveExecutor extends DirectoryListingSaveExecutor
         if (!saveHistory.isEmpty()) {
             File latestSaved = saveHistory.latest();
             String latestSavedUrl = latestSaved.getPath();
-            LOGGER.info("latest saved url: " + latestSavedUrl);
+//            LOGGER.info("latest saved url: " + latestSavedUrl);
             if (!timeExtractor.canExtractTime(latestSavedUrl) || !timeExtractor.canExtractTime(url)) {
                 throw new TimeExtractionException("Can't extract time from: " + latestSavedUrl);
             }

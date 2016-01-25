@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
  */
 public final class FilePredicates {
 
+    private FilePredicates() {
+    }
+
     public static Predicate<String> forIsFile() {
         return new IsFilePredicate();
     }
@@ -16,11 +19,7 @@ public final class FilePredicates {
         return new FileTypePredicate(fileTypes);
     }
 
-    public static Predicate<String> forContainingText(String textSequence) {
-        return new ContainsTextPredicate(textSequence);
-    }
-
-    public static Predicate<String> forRegex(String regex) {
-        return Pattern.compile(regex).asPredicate();
+    public static Predicate<String> forContainingText(final String textSequence) {
+        return str -> str.contains(textSequence);
     }
 }

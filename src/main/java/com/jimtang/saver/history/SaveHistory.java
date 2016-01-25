@@ -26,15 +26,11 @@ public class SaveHistory implements Iterable<File> {
     }
 
     public void add(File savedFile) {
-        while (history.size() >= capacity) {
+        while (history.size() > capacity) {
             history.removeFirst();
         }
         history.add(savedFile);
     }
-
-//    public void removeLatest() {
-//        history.removeLast();
-//    }
 
     public boolean isEmpty() {
         return history.isEmpty();
