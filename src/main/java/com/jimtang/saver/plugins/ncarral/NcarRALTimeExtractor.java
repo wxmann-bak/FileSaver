@@ -1,6 +1,6 @@
 package com.jimtang.saver.plugins.ncarral;
 
-import com.jimtang.saver.filters.time.RegexTimeExtractor;
+import com.jimtang.saver.time.RegexTimeExtractor;
 
 import java.time.format.DateTimeFormatter;
 

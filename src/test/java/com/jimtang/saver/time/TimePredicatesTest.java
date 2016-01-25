@@ -1,4 +1,4 @@
-package com.jimtang.saver.filters.time;
+package com.jimtang.saver.time;
 
 import org.junit.Assert;
 import org.junit.Test;

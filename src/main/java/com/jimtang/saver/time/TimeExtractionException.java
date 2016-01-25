@@ -1,4 +1,4 @@
-package com.jimtang.saver.filters.time;
+package com.jimtang.saver.time;
 
 /**
  * Created by tangz on 10/4/2015.
