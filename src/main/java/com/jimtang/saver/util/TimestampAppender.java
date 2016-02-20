@@ -25,7 +25,7 @@ public class TimestampAppender implements FileNameHandler {
     public String buildName(String rawFileName) {
         String[] fileParts = rawFileName.split("\\.");
         if (fileParts.length != 2) {
-            throw new FileNameException("File name: " + rawFileName + " is not in the expected format: <raw util name>.<util extension>");
+            throw new FileNameException("File name: " + rawFileName + " is not in the expected format: <raw file name>.<file extension>");
         }
         return String.format("%s-%s.%s", fileParts[0], getTimeStamp(), fileParts[1]);
     }
