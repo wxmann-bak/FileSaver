@@ -1,4 +1,4 @@
-package com.jimtang.saver.filters;
+package com.jimtang.saver.files;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;

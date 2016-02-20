@@ -1,8 +1,7 @@
 package com.jimtang.saver.executor;
 
-import com.google.common.base.Predicates;
-import com.jimtang.saver.filters.FilePredicates;
-import com.jimtang.saver.filters.FileTypeFilterable;
+import com.jimtang.saver.files.FilePredicates;
+import com.jimtang.saver.files.FileTypeFilterable;
 import org.apache.commons.io.FilenameUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

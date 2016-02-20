@@ -1,5 +1,6 @@
 package com.jimtang.saver.filters;
 
+import com.jimtang.saver.files.FilePredicates;
 import org.junit.Assert;
 import org.junit.Test;
 
