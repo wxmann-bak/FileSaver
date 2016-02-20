@@ -1,7 +1,10 @@
 package com.jimtang.saver.executor;
 
-import com.jimtang.saver.history.HistorySupplier;
+import com.jimtang.saver.settings.FileSource;
+import com.jimtang.saver.settings.FileTarget;
+import com.jimtang.saver.settings.HistorySupplier;
 import com.jimtang.saver.history.SaveHistory;
+import com.jimtang.saver.util.ArgumentChecker;
 
 import java.io.*;
 import java.net.URL;
@@ -10,19 +13,17 @@ import java.util.logging.Logger;
 /**
  * Created by tangz on 10/1/2015.
  */
-public class StaticURLSaveExecutor implements SaveExecutor, HistorySupplier {
+public class StaticURLSaveExecutor
+        implements HistorySupplier, FileSource, FileTarget {
 
     private static final int BUFFER_SIZE = 3000;
 
     private static final Logger LOGGER = Logger.getLogger(StaticURLSaveExecutor.class.getName());
 
     private String imageUrl;
+    private String saveLocation;
     private int bytes = BUFFER_SIZE;
     private SaveHistory saveHistory = new SaveHistory();
-
-    public StaticURLSaveExecutor(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     protected void doSaveWithURL(URL url, String saveLocation) throws IOException {
         try (InputStream in = url.openStream();
@@ -41,8 +42,9 @@ public class StaticURLSaveExecutor implements SaveExecutor, HistorySupplier {
     }
 
     @Override
-    public void doSave(String saveLocation) {
+    public void doSave() {
         try {
+            ArgumentChecker.checkNotNull(imageUrl, saveLocation);
             doSaveWithURL(new URL(imageUrl), saveLocation);
             pushToHistory(new File(saveLocation));
 
@@ -52,12 +54,27 @@ public class StaticURLSaveExecutor implements SaveExecutor, HistorySupplier {
     }
 
     @Override
-    public void pushToHistory(File savedFile) {
-        saveHistory.add(savedFile);
+    public SaveHistory getHistory() {
+        return saveHistory;
     }
 
     @Override
-    public SaveHistory getHistory() {
-        return saveHistory;
+    public void setSourceFile(String urlToSave) {
+        this.imageUrl = urlToSave;
+    }
+
+    @Override
+    public String getSourceFile() {
+        return imageUrl;
+    }
+
+    @Override
+    public void setTargetFile(String saveLocation) {
+        this.saveLocation = saveLocation;
+    }
+
+    @Override
+    public String getTargetFile() {
+        return saveLocation;
     }
 }

@@ -3,8 +3,8 @@ package com.jimtang.saver.executor.httpresponse;
 import com.jimtang.saver.executor.HTTPResponseSaveExecutor;
 import com.jimtang.saver.executor.ImageRetrievalException;
 import com.jimtang.saver.executor.StaticURLSaveExecutor;
-import com.jimtang.saver.history.HistorySupplier;
 import com.jimtang.saver.history.SaveHistory;
+import com.jimtang.saver.settings.HistorySupplier;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -18,7 +18,8 @@ import java.io.IOException;
 /**
  * Created by tangz on 10/3/2015.
  */
-public abstract class HTMLBodySaveExecutor extends HTTPResponseSaveExecutor implements HostRetrievable, HistorySupplier {
+public abstract class HTMLBodySaveExecutor extends HTTPResponseSaveExecutor
+        implements HistorySupplier {
 
     private SaveHistory history = new SaveHistory();
 
@@ -28,8 +29,10 @@ public abstract class HTMLBodySaveExecutor extends HTTPResponseSaveExecutor impl
         try {
             String htmlStr = EntityUtils.toString(entity);
             String imageUrl = getImageUrlFromHtml(htmlStr);
-            StaticURLSaveExecutor saveDelegate = new StaticURLSaveExecutor(imageUrl);
-            saveDelegate.doSave(saveLocation);
+            StaticURLSaveExecutor saveDelegate = new StaticURLSaveExecutor();
+            saveDelegate.setSourceFile(imageUrl);
+            saveDelegate.setTargetFile(saveLocation);
+            saveDelegate.doSave();
 
             pushToHistory(new File(saveLocation));
 
@@ -52,11 +55,6 @@ public abstract class HTMLBodySaveExecutor extends HTTPResponseSaveExecutor impl
 
     @Override
     public abstract String getHost();
-
-    @Override
-    public void pushToHistory(File savedFile) {
-        history.add(savedFile);
-    }
 
     @Override
     public SaveHistory getHistory() {

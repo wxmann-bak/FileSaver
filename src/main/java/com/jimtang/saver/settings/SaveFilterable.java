@@ -1,4 +1,4 @@
-package com.jimtang.saver.filters;
+package com.jimtang.saver.settings;
 
 import java.util.function.Predicate;
 

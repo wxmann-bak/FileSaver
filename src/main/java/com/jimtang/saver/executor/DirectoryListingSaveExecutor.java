@@ -1,7 +1,11 @@
 package com.jimtang.saver.executor;
 
 import com.jimtang.saver.files.FilePredicates;
-import com.jimtang.saver.files.FileTypeFilterable;
+import com.jimtang.saver.settings.DirectorySource;
+import com.jimtang.saver.settings.DirectoryTarget;
+import com.jimtang.saver.settings.FileTypeFilterable;
+import com.jimtang.saver.settings.SaveFilterable;
+import com.jimtang.saver.util.ArgumentChecker;
 import org.apache.commons.io.FilenameUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,10 +22,12 @@ import java.util.stream.Collectors;
 /**
  * Created by tangz on 10/4/2015.
  */
-public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilterable {
+public class DirectoryListingSaveExecutor
+        implements SaveFilterable, FileTypeFilterable, DirectorySource, DirectoryTarget {
 
     private String onlineDirectory;
     private Collection<Predicate<String>> filters = new HashSet<>();
+    private String saveLocation;
 
     public DirectoryListingSaveExecutor(String onlineDirectory) {
         this.onlineDirectory = onlineDirectory;
@@ -86,9 +92,11 @@ public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilte
     }
 
     protected void saveOne(String url, String saveLocation) {
-        StaticURLSaveExecutor exec = new StaticURLSaveExecutor(url);
+        StaticURLSaveExecutor exec = new StaticURLSaveExecutor();
         String actualSaveLocation = getFullFileLocation(saveLocation, getFileName(url));
-        exec.doSave(actualSaveLocation);
+        exec.setSourceFile(url);
+        exec.setTargetFile(actualSaveLocation);
+        exec.doSave();
 
         // for security reasons, pause 0.2 sec between saves, so as we don't overwhelm the server.
         try {
@@ -97,16 +105,32 @@ public class DirectoryListingSaveExecutor implements SaveExecutor, FileTypeFilte
         }
     }
 
-    /**
-     *
-     * @param saveLocation the directory that we want to save images to.
-     */
     @Override
-    public void doSave(String saveLocation) {
+    public void doSave() {
+        ArgumentChecker.checkNotNull(onlineDirectory, saveLocation);
         Collection<String> urls = getAndFilterURLs();
-
         for (String url: urls) {
-            saveOne(url, saveLocation);
+            saveOne(url, onlineDirectory);
         }
+    }
+
+    @Override
+    public void setSourceDirectory(String urlToSave) {
+        this.onlineDirectory = urlToSave;
+    }
+
+    @Override
+    public String getSourceDirectory() {
+        return onlineDirectory;
+    }
+
+    @Override
+    public void setTargetDirectory(String saveLocation) {
+        this.saveLocation = saveLocation;
+    }
+
+    @Override
+    public String getTargetDirectory() {
+        return saveLocation;
     }
 }

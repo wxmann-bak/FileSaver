@@ -20,7 +20,7 @@ public class NasaMSFCSaveExecutor extends HTMLBodySaveExecutor {
     }
 
     @Override
-    protected URI getURI() {
+    public URI getURI() {
         try {
             return new URIBuilder()
                     .setScheme("http")

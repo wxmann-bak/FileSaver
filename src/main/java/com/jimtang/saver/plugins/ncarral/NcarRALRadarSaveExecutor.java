@@ -26,7 +26,7 @@ public class NcarRALRadarSaveExecutor extends HTMLBodySaveExecutor {
     }
 
     @Override
-    protected URI getURI() {
+    public URI getURI() {
         try {
             String endDateStr = new SimpleDateFormat("yyyyMMdd").format(parameters.getEndDate());
             return new URIBuilder()

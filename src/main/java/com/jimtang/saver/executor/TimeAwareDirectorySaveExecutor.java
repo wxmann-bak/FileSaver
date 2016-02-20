@@ -1,7 +1,7 @@
 package com.jimtang.saver.executor;
 
 import com.jimtang.saver.time.*;
-import com.jimtang.saver.history.HistorySupplier;
+import com.jimtang.saver.settings.HistorySupplier;
 import com.jimtang.saver.history.SaveHistory;
 
 import java.io.File;
@@ -13,7 +13,8 @@ import java.util.logging.Logger;
 /**
  * Created by tangz on 1/23/2016.
  */
-public class TimeAwareDirectorySaveExecutor extends DirectoryListingSaveExecutor implements HistorySupplier {
+public class TimeAwareDirectorySaveExecutor extends DirectoryListingSaveExecutor
+        implements HistorySupplier {
 
     private static final Logger LOGGER = Logger.getLogger(TimeAwareDirectorySaveExecutor.class.getName());
 
@@ -64,7 +65,6 @@ public class TimeAwareDirectorySaveExecutor extends DirectoryListingSaveExecutor
         if (!saveHistory.isEmpty()) {
             File latestSaved = saveHistory.latest();
             String latestSavedUrl = latestSaved.getPath();
-//            LOGGER.info("latest saved url: " + latestSavedUrl);
             if (!timeExtractor.canExtractTime(latestSavedUrl) || !timeExtractor.canExtractTime(url)) {
                 throw new TimeExtractionException("Can't extract time from: " + latestSavedUrl);
             }
@@ -77,11 +77,6 @@ public class TimeAwareDirectorySaveExecutor extends DirectoryListingSaveExecutor
         }
         super.saveOne(url, saveLocation);
         pushToHistory(new File(url));
-    }
-
-    @Override
-    public void pushToHistory(File savedFile) {
-        saveHistory.add(savedFile);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.jimtang.saver.executor;
 
 import com.google.common.collect.Lists;
+import com.jimtang.saver.settings.FileTarget;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -20,9 +21,8 @@ public class PeriodicSaveExecutor implements SaveExecutor {
         private TimedSaveExecutor saveExecutor;
         private Duration savePeriod;
         private LocalDateTime end;
-        private String saveLocation;
 
-        private SaveGroup(SaveExecutor directSaveExecutor, Duration savePeriod, String saveLocation,
+        private SaveGroup(FileTarget directSaveExecutor, Duration savePeriod,
                           LocalDateTime end, boolean conservativeSave) throws SaveConfigurationException {
             if (end.isBefore(LocalDateTime.now())) {
                 throw new SaveConfigurationException("Cannot have ending of the save group be before current!");
@@ -30,7 +30,6 @@ public class PeriodicSaveExecutor implements SaveExecutor {
             this.saveExecutor = new TimedSaveExecutor(directSaveExecutor, conservativeSave);
             this.savePeriod = savePeriod;
             this.end = end;
-            this.saveLocation = saveLocation;
         }
 
         private long periodToMillis() {
@@ -46,49 +45,22 @@ public class PeriodicSaveExecutor implements SaveExecutor {
         }
 
         private Runnable toRunnable() {
-            return () -> saveExecutor.doSave(saveLocation);
+            return () -> saveExecutor.doSave();
         }
     }
 
-    public void addGroup(SaveExecutor directSaveExecutor, String saveLocation, Duration savePeriod)
+    public void addGroup(FileTarget directSaveExecutor, Duration savePeriod)
             throws SaveConfigurationException {
-        saveGroups.add(new SaveGroup(directSaveExecutor, savePeriod, saveLocation, null, false));
+        saveGroups.add(new SaveGroup(directSaveExecutor, savePeriod, null, false));
     }
 
-    public void addGroup(SaveExecutor directSaveExecutor, String saveLocation, Duration savePeriod, LocalDateTime until)
+    public void addGroup(FileTarget directSaveExecutor, Duration savePeriod, LocalDateTime until)
             throws SaveConfigurationException {
-        saveGroups.add(new SaveGroup(directSaveExecutor, savePeriod, saveLocation, until, false));
+        saveGroups.add(new SaveGroup(directSaveExecutor, savePeriod, until, false));
     }
 
     @Override
-    public void doSave(String saveLocation) {
-//        ScheduledExecutorService scheduler =
-//                Executors.newScheduledThreadPool(Math.min(saveGroups.size(), Runtime.getRuntime().availableProcessors()));
-//        Collection<ScheduledFuture<?>> futures = Lists.newArrayList();
-//        for (SaveGroup saveGroup: saveGroups) {
-//            ScheduledFuture<?> scheduledFuture =
-//                    scheduler.scheduleAtFixedRate(saveGroup.toRunnable(), 0L, saveGroup.periodToMillis(), MILLISECONDS);
-//            futures.add(scheduledFuture);
-//
-//            if (saveGroup.end != null) {
-//                ScheduledFuture<?> terminatingFuture =
-//                        scheduler.schedule(() -> {
-//                            scheduledFuture.cancel(true);
-//                        }, saveGroup.endToMillis(), MILLISECONDS);
-//                futures.add(terminatingFuture);
-//            }
-//        }
-//        try {
-//            for (ScheduledFuture<?> future : futures) {
-//                future.get();
-//            }
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            throw new ImageRetrievalException(e);
-//        } finally {
-//            scheduler.shutdownNow();
-//        }
+    public void doSave() {
         Collection<ScheduledFuture<?>> futures = Lists.newArrayList();
 
         for (SaveGroup saveGroup: saveGroups) {

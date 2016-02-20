@@ -1,6 +1,10 @@
 package com.jimtang.saver.executor;
 
-import com.jimtang.saver.history.HistorySupplier;
+import com.jimtang.saver.files.FileNameHandler;
+import com.jimtang.saver.settings.DynamicFileTarget;
+import com.jimtang.saver.settings.FileSource;
+import com.jimtang.saver.settings.FileTarget;
+import com.jimtang.saver.settings.HistorySupplier;
 import com.jimtang.saver.history.SaveHistory;
 import com.jimtang.saver.files.TimestampAppender;
 import org.apache.commons.io.FileUtils;
@@ -13,19 +17,20 @@ import java.util.logging.Logger;
 /**
  * Created by tangz on 10/1/2015.
  */
-public class TimedSaveExecutor implements SaveExecutor {
+public class TimedSaveExecutor implements DynamicFileTarget {
 
     private static final Logger LOGGER = Logger.getLogger(TimedSaveExecutor.class.getName());
 
-    private SaveExecutor primaryExecutor;
+    private FileTarget primaryExecutor;
     private TimestampAppender timestampAppender;
     private boolean conservativeWrite;
+    private String saveLocation;
 
-    public TimedSaveExecutor(SaveExecutor primaryExecutor) {
+    public TimedSaveExecutor(FileTarget primaryExecutor) {
         this(primaryExecutor, false);
     }
 
-    public TimedSaveExecutor(SaveExecutor primaryExecutor, boolean conservativeWrite) {
+    public TimedSaveExecutor(FileTarget primaryExecutor, boolean conservativeWrite) {
         if (primaryExecutor instanceof TimedSaveExecutor) {
             throw new IllegalArgumentException("Can't use a timed executor with another timed executor");
         }
@@ -35,9 +40,9 @@ public class TimedSaveExecutor implements SaveExecutor {
     }
 
     @Override
-    public void doSave(String saveLocation) {
-        String timeAppendedLoc = timestampAppender.buildName(saveLocation);
-        primaryExecutor.doSave(timeAppendedLoc);
+    public void doSave() {
+        primaryExecutor.setTargetFile(getTargetFile());
+        primaryExecutor.doSave();
         deleteDupIfConservativeWrite();
     }
 
@@ -79,5 +84,20 @@ public class TimedSaveExecutor implements SaveExecutor {
                         "This implementation of save execution does not keep history so we cannot get rid of duplicates");
             }
         }
+    }
+
+    @Override
+    public FileNameHandler getFileNameHandler() {
+        return this.timestampAppender;
+    }
+
+    @Override
+    public void setTargetFile(String saveLocation) {
+        primaryExecutor.setTargetFile(saveLocation);
+    }
+
+    @Override
+    public String getTargetFile() {
+        return timestampAppender.buildName(primaryExecutor.getTargetFile());
     }
 }
